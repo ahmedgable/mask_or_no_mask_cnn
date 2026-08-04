@@ -1,18 +1,23 @@
 import os
+import sys
+
+# إخفاء تحذيرات TensorFlow المزعجة في الـ Logs
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
 import cv2
 import gradio as gr
 import numpy as np
-import tensorflow as tf
 import requests
+import tensorflow as tf
 
-# 1. مسار الأوزان ورابط التنزيل المباشر
+# 1. تحديد مسار الأوزان ورابط التنزيل
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEIGHTS_PATH = os.path.join(BASE_DIR, "mask_detector_weights.weights.h5")
 FILE_ID = "1JwuFcT__4TsSDdhy6yifntu9Hq_GoI4P"
 
 
 def download_file_from_google_drive(file_id, destination):
-    """دالة لضمان تنزيل الملفات الكبيرة من Google Drive بدون توقف عند صفحة التأكيد"""
+    """دالة تنزيل الأوزان وتجاوز صفحة الحماية للملفات الكبيرة"""
     URL = "https://docs.google.com/uc?export=download"
     session = requests.Session()
     response = session.get(
@@ -36,13 +41,17 @@ def download_file_from_google_drive(file_id, destination):
                 f.write(chunk)
 
 
-# 2. تنزيل الأوزان تلقائياً إذا لم تكن موجودة
+# 2. تنزيل الأوزان في حال عدم وجودها تلقائياً
 if not os.path.exists(WEIGHTS_PATH):
     print("Downloading weights file from Google Drive...")
-    download_file_from_google_drive(FILE_ID, WEIGHTS_PATH)
-    print("Download completed!")
+    try:
+        download_file_from_google_drive(FILE_ID, WEIGHTS_PATH)
+        print("Download completed successfully!")
+    except Exception as e:
+        print(f"Error downloading weights: {e}")
+        sys.exit(1)
 
-# 3. بناء نموذج الـ CNN
+# 3. بناء نموذج CNN
 model = tf.keras.models.Sequential(
     [
         tf.keras.layers.Input(shape=(128, 128, 3)),
@@ -109,7 +118,7 @@ def process_frame(image):
     return output_image
 
 
-# 6. إعداد Gradio
+# 6. واجهة Gradio
 demo = gr.Interface(
     fn=process_frame,
     inputs=gr.Image(
