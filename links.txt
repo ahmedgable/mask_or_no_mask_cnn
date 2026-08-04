@@ -1,0 +1,2 @@
+link dataset : https://www.kaggle.com/datasets/shanmukh05/mask-detection
+link notebook : https://www.kaggle.com/code/ahmedgable/project-cnn
