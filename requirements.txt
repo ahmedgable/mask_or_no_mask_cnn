@@ -2,3 +2,4 @@ tensorflow
 opencv-python-headless
 numpy
 gradio
+opencv-python-headless
