@@ -75,8 +75,13 @@ IMG_SIZE = 128
 import os
 
 cascade_path = 'haarcascade_frontalface_default.xml'
-face_cascade = cv2.CascadeClassifier(cascade_path)
+import os
 
+# تحديد المسار النسبي بناءً على مكان وجود ملف app.py الحالي
+current_dir = os.path.dirname(os.path.abspath(__file__))
+cascade_path = os.path.join(current_dir, 'haarcascade_frontalface_default.xml')
+
+face_cascade = cv2.CascadeClassifier(cascade_path)
 # 5. معالجة الإطارات
 def process_frame(image):
     if image is None:
