@@ -72,9 +72,7 @@ model = tf.keras.models.Sequential(
 model.load_weights(WEIGHTS_PATH)
 
 IMG_SIZE = 128
-face_cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-)
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 
 # 5. معالجة الإطارات
